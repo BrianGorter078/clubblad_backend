@@ -13,52 +13,56 @@ type Clubblad struct {
 	URL    string
 }
 
-const CLUBBLADURL = "http://www.kc-dordrecht.nl/wp-content/uploads/WB_2017_"
+const CLUBBLADURL = "http://www.kc-dordrecht.nl/wp-content/uploads/WB_2017_%s.pdf"
 
 func looper(url string) {
 	for index := 0; index < 20; index++ {
-		var indexString = strconv.Itoa(index)
-		httpGet(url+indexString+".pdf", index)
+		httpGet(fmt.Sprintf(CLUBBLADURL, strconv.Itoa(index)), index)
 	}
 }
 
 func httpGet(url string, index int) {
 	resp, err := http.Get(url)
 
-	if resp.StatusCode != 200 {
-	} else {
-		var respCode = strconv.Itoa(resp.StatusCode)
-		fmt.Println(respCode)
-		persistResponse(url, index)
-	}
-
 	if err != nil {
 		fmt.Println(resp.Header)
 	}
+
+	if resp.StatusCode != 200 {
+		return
+	}
+
+	var respCode = strconv.Itoa(resp.StatusCode)
+	fmt.Println(respCode)
+	persistResponse(url, index)
 }
 
 func persistResponse(responseBody string, index int) {
 	out := checkFile()
+	defer out.Close()
+
 	jsonString := &Clubblad{
 		Number: index,
-		URL:    responseBody}
-	jsonResponse, _ := json.Marshal(jsonString)
-	fmt.Println(string(jsonResponse))
-	out.WriteString(string(jsonResponse) + "\n")
+		URL:    responseBody,
+	}
 
+	if err := json.NewEncoder(out).Encode(jsonString); err != nil {
+		fmt.Printf("Failed writing to disk! %v", err)
+	}
 }
 
 func checkFile() *os.File {
-	out, err := os.OpenFile("Clubbladen", os.O_APPEND|os.O_WRONLY, 0600)
-	if err != nil {
-		createdFile, err := createFile()
+	var file *os.File
+	file, err := os.OpenFile("Clubbladen", os.O_APPEND|os.O_WRONLY, 0600)
+
+	if os.IsNotExist(err) {
+		file, err = createFile()
 		if err != nil {
 			fmt.Println(err)
-		} else {
-			return createdFile
+			return nil
 		}
 	}
-	return out
+	return file
 }
 
 func createFile() (*os.File, error) {
@@ -66,7 +70,6 @@ func createFile() (*os.File, error) {
 
 	if err != nil {
 		fmt.Println(err)
-		out.Close()
 		return nil, err
 	}
 
