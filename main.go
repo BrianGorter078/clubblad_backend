@@ -10,7 +10,8 @@ func main() {
 	for {
 		currentTime := time.Now().Local()
 		fmt.Println(currentTime)
-		looper(CLUBBLADURL)
+		looper(CLUBBLAD_URL)
+		fmt.Println("Done")
 		<-t.C
 	}
 }

@@ -1,27 +1,36 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"os"
 	"strconv"
 )
 
+//Stores Clubblad information
+//Number = Clubbladnummer
+//URL = URL to Clubblad
 type Clubblad struct {
 	Number int
 	URL    string
 }
 
-const CLUBBLADURL = "http://www.kc-dordrecht.nl/wp-content/uploads/WB_2017_%s.pdf"
+//Link to Clubblad
+const CLUBBLAD_URL string = "http://www.kc-dordrecht.nl/wp-content/uploads/WB_2017_%s.pdf"
+
+//Name of the file to write to
+const FILE_NAME = "Clubbladen"
 
 func looper(url string) {
-	for index := 0; index < 20; index++ {
-		httpGet(fmt.Sprintf(CLUBBLADURL, strconv.Itoa(index)), index)
+	for clubbladNumber := 0; clubbladNumber < 20; clubbladNumber++ {
+		httpGet(fmt.Sprintf(CLUBBLAD_URL, strconv.Itoa(clubbladNumber)), clubbladNumber)
 	}
 }
 
-func httpGet(url string, index int) {
+func httpGet(url string, clubbladNumber int) {
 	resp, err := http.Get(url)
 
 	if err != nil {
@@ -32,28 +41,26 @@ func httpGet(url string, index int) {
 		return
 	}
 
-	var respCode = strconv.Itoa(resp.StatusCode)
-	fmt.Println(respCode)
-	persistResponse(url, index)
+	persistResponse(url, clubbladNumber)
 }
 
-func persistResponse(responseBody string, index int) {
-	out := checkFile()
-	defer out.Close()
+func persistResponse(responseBody string, clubbladNumber int) {
+	file := fileLookUp()
+	defer file.Close()
 
 	jsonString := &Clubblad{
-		Number: index,
+		Number: clubbladNumber,
 		URL:    responseBody,
 	}
 
-	if err := json.NewEncoder(out).Encode(jsonString); err != nil {
-		fmt.Printf("Failed writing to disk! %v", err)
+	if !readFileContent(jsonString) {
+		writeToFile(file, jsonString)
 	}
 }
 
-func checkFile() *os.File {
+func fileLookUp() *os.File {
 	var file *os.File
-	file, err := os.OpenFile("Clubbladen", os.O_APPEND|os.O_WRONLY, 0600)
+	file, err := os.OpenFile(FILE_NAME, os.O_APPEND|os.O_RDWR, 0600)
 
 	if os.IsNotExist(err) {
 		file, err = createFile()
@@ -66,12 +73,38 @@ func checkFile() *os.File {
 }
 
 func createFile() (*os.File, error) {
-	out, err := os.Create("Clubbladen")
+	out, err := os.Create(FILE_NAME)
 
 	if err != nil {
 		fmt.Println(err)
 		return nil, err
 	}
-
 	return out, nil
+}
+
+func readFileContent(jsonString *Clubblad) (exists bool) {
+	fmt.Println("readfile")
+	clubblad, err := json.Marshal(jsonString)
+	if err != nil {
+		fmt.Printf("error %v", err)
+	}
+
+	fileContent, readErr := ioutil.ReadFile(FILE_NAME)
+
+	if readErr != nil {
+		fmt.Println(readErr)
+	}
+
+	if bytes.Contains(fileContent, clubblad) {
+		return true
+	}
+
+	return false
+}
+
+func writeToFile(file *os.File, jsonString *Clubblad) {
+	err := json.NewEncoder(file).Encode(jsonString)
+	if err != nil {
+		fmt.Printf("Failed writing to disk! %v", err)
+	}
 }
