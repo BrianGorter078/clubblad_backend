@@ -8,6 +8,8 @@ import (
 	"strconv"
 	"time"
 
+	"os"
+
 	"github.com/gorilla/mux"
 )
 
@@ -26,11 +28,13 @@ const CLUBBLAD_URL string = "http://www.kc-dordrecht.nl/wp-content/uploads/WB_20
 
 func main() {
 
+	port := os.Getenv("PORT")
+
 	go timer()
 
 	router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/", Index)
-	log.Fatal(http.ListenAndServe(":8080", router))
+	log.Fatal(http.ListenAndServe(port, router))
 }
 
 func timer() {
