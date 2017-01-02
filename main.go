@@ -17,11 +17,12 @@ import (
 //Number = Clubbladnummer
 //URL = URL to Clubblad
 type Clubblad struct {
-	number int
-	url    string
+	Number int
+	URL    string
 }
 
 var availableClubbladen = []Clubblad{}
+var loadClubbladen = []Clubblad{}
 
 //Link to Clubblad
 const CLUBBLAD_URL string = "http://www.kc-dordrecht.nl/wp-content/uploads/WB_2017_%s.pdf"
@@ -46,13 +47,14 @@ func timer() {
 		currentTime := time.Now().Local()
 		fmt.Println(currentTime)
 		looper(CLUBBLAD_URL)
+		availableClubbladen = loadClubbladen
 		fmt.Println("Done")
 		<-t.C
 	}
 }
 
 func looper(url string) {
-	availableClubbladen = []Clubblad{}
+	loadClubbladen = []Clubblad{}
 
 	for clubbladNumber := 20; clubbladNumber > 0; clubbladNumber-- {
 		httpGet(fmt.Sprintf(CLUBBLAD_URL, strconv.Itoa(clubbladNumber)), clubbladNumber)
@@ -69,8 +71,8 @@ func httpGet(url string, clubbladNumber int) {
 	if resp.StatusCode != 200 {
 
 	} else {
-		availableClubbladen = append(availableClubbladen, Clubblad{clubbladNumber, url})
-		fmt.Println(availableClubbladen)
+		loadClubbladen = append(loadClubbladen, Clubblad{clubbladNumber, url})
+		fmt.Println(loadClubbladen)
 	}
 
 }
