@@ -54,7 +54,7 @@ func timer() {
 func looper(url string) {
 	availableClubbladen = []Clubblad{}
 
-	for clubbladNumber := 0; clubbladNumber < 20; clubbladNumber++ {
+	for clubbladNumber := 20; clubbladNumber > 0; clubbladNumber-- {
 		httpGet(fmt.Sprintf(CLUBBLAD_URL, strconv.Itoa(clubbladNumber)), clubbladNumber)
 	}
 }
