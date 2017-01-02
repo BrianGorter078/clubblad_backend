@@ -17,8 +17,8 @@ import (
 //Number = Clubbladnummer
 //URL = URL to Clubblad
 type Clubblad struct {
-	Number int
-	URL    string
+	number int
+	url    string
 }
 
 var availableClubbladen = []Clubblad{}
