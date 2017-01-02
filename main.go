@@ -77,6 +77,6 @@ func httpGet(url string, clubbladNumber int) {
 
 }
 
-func Index(w http.ResponseWriter, r *http.Request) {
-	json.NewEncoder(w).Encode(availableClubbladen)
+func Index(writer http.ResponseWriter, r *http.Request) {
+	json.NewEncoder(writer).Encode(availableClubbladen)
 }
