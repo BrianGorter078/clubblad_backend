@@ -17,6 +17,7 @@ import (
 //Number = Clubbladnummer
 //URL = URL to Clubblad
 type Clubblad struct {
+	Title  string `json:"title,omitempty"`
 	Number int    `json:"number"`
 	URL    string `json:"url"`
 }
@@ -71,7 +72,10 @@ func httpGet(url string, clubbladNumber int) {
 	if resp.StatusCode != 200 {
 
 	} else {
-		loadClubbladen = append(loadClubbladen, Clubblad{clubbladNumber, url})
+		loadClubbladen = append(loadClubbladen, Clubblad{
+			Number: clubbladNumber,
+			URL:    url,
+		})
 		fmt.Println(loadClubbladen)
 	}
 
