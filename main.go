@@ -27,12 +27,13 @@ var loadClubbladen = []Clubblad{}
 const CLUBBLAD_URL string = "http://www.kc-dordrecht.nl/wp-content/uploads/WB_2017_%s.pdf"
 
 func main() {
-
+	//Setting the port from a environment variable to listen on on heroku
 	PORT := os.Getenv("PORT")
 	if PORT == "" {
 		PORT = "8080"
 	}
 
+	//Looping over all posible url's to get all the availableClubbladen
 	go timer()
 
 	http.HandleFunc("/", index)
@@ -76,11 +77,10 @@ func httpGet(url string, clubbladNumber int) {
 		})
 		fmt.Println(loadClubbladen)
 	}
-
 }
 
 func index(writer http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(writer, "This is the backend of the KCD Clubblad app availleble in the google play and itunes app store!")
+	fmt.Fprintf(writer, "<h2>This is the backend of the KCD Clubblad app availleble in the google play and itunes app store!</h2>")
 }
 
 func kcd(writer http.ResponseWriter, r *http.Request) {
