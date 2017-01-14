@@ -38,7 +38,8 @@ func main() {
 	go timer()
 
 	router := mux.NewRouter().StrictSlash(true)
-	router.HandleFunc("/", Index)
+	router.HandleFunc("/", index)
+	router.HandleFunc("/kcd", kcd)
 	log.Fatal(http.ListenAndServe(":"+PORT, router))
 }
 
@@ -81,6 +82,10 @@ func httpGet(url string, clubbladNumber int) {
 
 }
 
-func Index(writer http.ResponseWriter, r *http.Request) {
+func index(writer http.ResponseWriter, r *http.Request) {
+	json.NewEncoder(writer).Encode(availableClubbladen)
+}
+
+func kcd(writer http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(writer).Encode(availableClubbladen)
 }
