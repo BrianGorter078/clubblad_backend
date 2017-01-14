@@ -9,8 +9,6 @@ import (
 	"time"
 
 	"os"
-
-	"github.com/gorilla/mux"
 )
 
 //Stores Clubblad information
@@ -37,10 +35,9 @@ func main() {
 
 	go timer()
 
-	router := mux.NewRouter().StrictSlash(true)
-	router.HandleFunc("/", index)
-	router.HandleFunc("/kcd", kcd)
-	log.Fatal(http.ListenAndServe(":"+PORT, router))
+	http.HandleFunc("/", index)
+	http.HandleFunc("/kcd", kcd)
+	log.Fatal(http.ListenAndServe(":"+PORT, nil))
 }
 
 func timer() {
@@ -83,7 +80,7 @@ func httpGet(url string, clubbladNumber int) {
 }
 
 func index(writer http.ResponseWriter, r *http.Request) {
-	json.NewEncoder(writer).Encode(availableClubbladen)
+	fmt.Fprintf(writer, "Hi there, I love %s!", r.URL.Path[1:])
 }
 
 func kcd(writer http.ResponseWriter, r *http.Request) {
