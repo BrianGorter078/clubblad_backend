@@ -80,7 +80,7 @@ func httpGet(url string, clubbladNumber int) {
 }
 
 func index(writer http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(writer, "Hi there, I love %s!", r.URL.Path[1:])
+	fmt.Fprintf(writer, "This is the backend of the KCD Clubblad app availleble in the google play and itunes app store!")
 }
 
 func kcd(writer http.ResponseWriter, r *http.Request) {
