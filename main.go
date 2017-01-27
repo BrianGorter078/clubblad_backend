@@ -77,8 +77,9 @@ func httpGet(url string, clubbladNumber int) {
 		Number: clubbladNumber,
 		URL:    url,
 	})
-		fmt.Println(loadClubbladen)
-	}
+	
+	fmt.Println(loadClubbladen)
+	
 }
 
 func index(writer http.ResponseWriter, r *http.Request) {
