@@ -66,11 +66,11 @@ func httpGet(url string, clubbladNumber int) {
 
 	if err != nil {
 		fmt.Println(resp.Header)
-		break;
+		return
 	}
 
 	if resp.StatusCode != 200 {
-		break;
+		return
 	} 
 	
 	loadClubbladen = append(loadClubbladen, Clubblad{
