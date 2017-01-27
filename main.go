@@ -66,21 +66,23 @@ func httpGet(url string, clubbladNumber int) {
 
 	if err != nil {
 		fmt.Println(resp.Header)
+		break;
 	}
 
 	if resp.StatusCode != 200 {
-
-	} else {
-		loadClubbladen = append(loadClubbladen, Clubblad{
-			Number: clubbladNumber,
-			URL:    url,
-		})
+		break;
+	} 
+	
+	loadClubbladen = append(loadClubbladen, Clubblad{
+		Number: clubbladNumber,
+		URL:    url,
+	})
 		fmt.Println(loadClubbladen)
 	}
 }
 
 func index(writer http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(writer, "This is the backend of the KCD Clubblad app availleble in the google play and itunes app store!")
+	fmt.Fprintf(writer, "This is the backend of the KCD Clubblad app availlable in the google play and itunes app store!")
 }
 
 func kcd(writer http.ResponseWriter, r *http.Request) {
