@@ -36,7 +36,6 @@ func main() {
 	//Looping over all posible url's to get all the availableClubbladen
 	go timer()
 
-	http.Handle("/", http.FileServer(http.Dir("./public")))
 	http.HandleFunc("/kcd", kcd)
 	log.Fatal(http.ListenAndServe(":"+PORT, nil))
 }
@@ -75,10 +74,6 @@ func httpGet(url string, clubbladNumber int) {
 	})
 
 	fmt.Println(loadClubbladen)
-
-}
-
-func index(w http.ResponseWriter, r *http.Request) {
 
 }
 
