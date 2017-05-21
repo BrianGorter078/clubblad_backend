@@ -36,7 +36,7 @@ func main() {
 	//Looping over all posible url's to get all the availableClubbladen
 	go timer()
 
-	http.HandleFunc("/", index)
+	http.Handle("/", http.FileServer(http.Dir("./public")))
 	http.HandleFunc("/kcd", kcd)
 	log.Fatal(http.ListenAndServe(":"+PORT, nil))
 }
@@ -56,7 +56,7 @@ func timer() {
 func looper(url string) {
 	loadClubbladen = []Clubblad{}
 
-	for clubbladNumber := 20; clubbladNumber > 0; clubbladNumber-- {
+	for clubbladNumber := 30; clubbladNumber > 0; clubbladNumber-- {
 		httpGet(fmt.Sprintf(CLUBBLAD_URL, strconv.Itoa(clubbladNumber)), clubbladNumber)
 	}
 }
@@ -64,26 +64,22 @@ func looper(url string) {
 func httpGet(url string, clubbladNumber int) {
 	resp, err := http.Get(url)
 
-	if err != nil {
+	if err != nil || resp.StatusCode != 200 {
 		fmt.Println(resp.Header)
 		return
 	}
 
-	if resp.StatusCode != 200 {
-		return
-	} 
-	
 	loadClubbladen = append(loadClubbladen, Clubblad{
 		Number: clubbladNumber,
 		URL:    url,
 	})
-	
+
 	fmt.Println(loadClubbladen)
-	
+
 }
 
-func index(writer http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(writer, "This is the backend of the KCD Clubblad app availlable in the google play and itunes app store!")
+func index(w http.ResponseWriter, r *http.Request) {
+
 }
 
 func kcd(writer http.ResponseWriter, r *http.Request) {
