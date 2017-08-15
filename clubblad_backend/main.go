@@ -24,7 +24,7 @@ var availableClubbladen = []Clubblad{}
 var loadClubbladen = []Clubblad{}
 
 //Link to Clubblad
-const CLUBBLAD_URL string = "http://www.kc-dordrecht.nl/wp-content/uploads/WB_2017_%s.pdf"
+const CLUBBLAD_URL string = "http://www.kc-dordrecht.nl/wp-content/uploads/WB_2018_%s.pdf"
 
 func main() {
 	//Setting the port from a environment variable to listen on on heroku
