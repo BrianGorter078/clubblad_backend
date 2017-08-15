@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 
 	"os"
@@ -24,7 +25,7 @@ var availableClubbladen = []Clubblad{}
 var loadClubbladen = []Clubblad{}
 
 //Link to Clubblad
-const CLUBBLAD_URL string = "http://www.kc-dordrecht.nl/wp-content/uploads/WB_2017_%s.pdf"
+const CLUBBLAD_URL string = "http://www.kc-dordrecht.nl/wp-content/uploads/WB_2018_%s.pdf"
 
 func main() {
 	//Setting the port from a environment variable to listen on on heroku
@@ -56,13 +57,25 @@ func looper(url string) {
 	loadClubbladen = []Clubblad{}
 
 	for clubbladNumber := 30; clubbladNumber > 0; clubbladNumber-- {
-		httpGet(fmt.Sprintf(CLUBBLAD_URL, strconv.Itoa(clubbladNumber)), clubbladNumber)
+		var number = clubbladNumber
+		if clubbladNumber < 10 {
+
+			httpGet(fmt.Sprintf(CLUBBLAD_URL, leftPad(strconv.Itoa(clubbladNumber), "0", 1)), clubbladNumber)
+		} else {
+			httpGet(fmt.Sprintf(CLUBBLAD_URL, strconv.Itoa(number)), clubbladNumber)
+		}
+
 	}
+}
+
+func leftPad(s string, padStr string, pLen int) string {
+	return strings.Repeat(padStr, pLen) + s
 }
 
 func httpGet(url string, clubbladNumber int) {
 	resp, err := http.Get(url)
 
+	fmt.Println(url)
 	if err != nil || resp.StatusCode != 200 {
 		fmt.Println(resp.Header)
 		return
