@@ -59,7 +59,6 @@ func looper(url string) {
 	for clubbladNumber := 30; clubbladNumber > 0; clubbladNumber-- {
 		var number = clubbladNumber
 		if clubbladNumber < 10 {
-
 			httpGet(fmt.Sprintf(CLUBBLAD_URL, leftPad(strconv.Itoa(clubbladNumber), "0", 1)), clubbladNumber)
 		} else {
 			httpGet(fmt.Sprintf(CLUBBLAD_URL, strconv.Itoa(number)), clubbladNumber)
